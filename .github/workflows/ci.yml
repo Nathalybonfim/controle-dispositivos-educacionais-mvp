@@ -19,13 +19,13 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Instalar dependencias
+      - name: Instalar dependencias e pytest-cov
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements.txt pytest-cov
 
-      - name: Executar testes automatizados com Pytest
+      - name: Executar testes automatizados com cobertura (Coverage)
         env:
           PYTHONPATH: .
         run: |
-          pytest -v
+          pytest -v --cov=app --cov-report=term-missing
