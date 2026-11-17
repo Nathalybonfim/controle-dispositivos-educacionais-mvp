@@ -44,7 +44,7 @@ Agilizar o empréstimo, a devolução e o controle patrimonial de **tablets, Chr
 ## 🚀 Como Executar Localmente
 1. Clone este repositório:
    ```bash
-git clone https://github.com
+   git clone https://github.com
    ```
 2. Crie e ative o ambiente virtual:
    ```bash
@@ -61,6 +61,16 @@ git clone https://github.com
    ```
 5. Acesse no navegador:
    * **Interface Web:** `http://127.0.0.1:8000`
+   * **Documentação Interativa da API (Swagger):** `http://127.0.0`
+
+---
+
+## 🧪 Testes e Integração Contínua (CI)
+Para executar os testes automatizados localmente, utilize o comando:
+```bash
+pytest -v
+```
+
 * **Documentação Interativa da API (Swagger):** `http://127.0.0`
 
 ---
