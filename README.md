@@ -41,7 +41,14 @@ Agilizar o empréstimo, a devolução e o controle patrimonial de **tablets, Chr
 
 ---
 
-## 🚀 Como Executar Localmente
+## 🌐 Acesso Direto em Produção (Interface Mobile-First)
+* **Aplicação Web Publicada:** [Abrir Sistema de Controle de Dispositivos TI](https://nathalybonfim.github.io/controle-dispositivos-educacionais-mvp/)
+
+---
+
+## 🚀 Como Executar Localmente (Back-end Python + Front-end)
+> **Nota:** Os endereços locais (`127.0.0.1:8000`) funcionam após iniciar o servidor Uvicorn no seu terminal.
+
 1. Clone este repositório:
    ```bash
    git clone https://github.com
@@ -59,7 +66,7 @@ Agilizar o empréstimo, a devolução e o controle patrimonial de **tablets, Chr
    ```bash
    uvicorn app.main:app --reload
    ```
-5. Acesse no navegador:
+5. Acesse no navegador após iniciar o servidor:
    * **Interface Web:** `http://127.0.0.1:8000`
    * **Documentação Interativa da API (Swagger):** `http://127.0.0`
 
@@ -71,12 +78,3 @@ Para executar os testes automatizados localmente, utilize o comando:
 pytest -v
 ```
 
-* **Documentação Interativa da API (Swagger):** `http://127.0.0`
-
----
-
-## 🧪 Testes e Integração Contínua (CI)
-Para executar os testes automatizados localmente, utilize o comando:
-```bash
-pytest -v
-```
