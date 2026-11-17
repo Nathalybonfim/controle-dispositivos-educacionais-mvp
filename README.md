@@ -1,4 +1,6 @@
 # 📱 Sistema de Controle e Rastreamento de Dispositivos Educacionais (MVP)
+![CI Status](https://github.com)
+
 
 Aplicação Web Responsiva (*Mobile-First*) desenvolvida para substituir o controle manual em caderno físico realizado pelos estagiários de TI da **Escola Estadual P.E.I. Reverendo Tércio Moraes Pereira**, alinhada ao [**ODS 4 — Educação de Qualidade (ONU Brasil)**](https://un.org).
 
@@ -42,7 +44,7 @@ Agilizar o empréstimo, a devolução e o controle patrimonial de **tablets, Chr
 ## 🚀 Como Executar Localmente
 1. Clone este repositório:
    ```bash
-   git clone https://github.com
+git clone https://github.com
    ```
 2. Crie e ative o ambiente virtual:
    ```bash
@@ -59,7 +61,7 @@ Agilizar o empréstimo, a devolução e o controle patrimonial de **tablets, Chr
    ```
 5. Acesse no navegador:
    * **Interface Web:** `http://127.0.0.1:8000`
-   * **Documentação Interativa da API (Swagger):** `http://127.0.0`
+* **Documentação Interativa da API (Swagger):** `http://127.0.0`
 
 ---
 
