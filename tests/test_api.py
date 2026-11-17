@@ -12,7 +12,7 @@ def test_listar_dispositivos_inicial():
 def test_emprestimo_em_lote_sucesso():
     with TestClient(app) as client:
         payload = {
-            "numeros":,
+            "numeros": list(range(1, 6)),
             "categoria": "tablet",
             "acao": "emprestar",
             "nome_professor": "Prof. Mariana",
@@ -25,7 +25,7 @@ def test_emprestimo_em_lote_sucesso():
 def test_bloqueio_aparelho_inservivel():
     with TestClient(app) as client:
         payload = {
-            "numeros":,
+            "numeros": list(range(18, 19)),
             "categoria": "tablet",
             "acao": "emprestar",
             "nome_professor": "Prof. Carlos",
@@ -38,7 +38,7 @@ def test_bloqueio_aparelho_inservivel():
 def test_devolucao_e_gabinete_carregamento():
     with TestClient(app) as client:
         resp = client.post("/api/movimentacoes/lote", json={
-            "numeros":,
+            "numeros": list(range(1, 6)),
             "categoria": "tablet",
             "acao": "carregando"
         })
