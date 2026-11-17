@@ -1,7 +1,3 @@
-# controle-dispositivos-educacionais-mvp
-MVP Web Responsivo (Python/FastAPI) para controle de empréstimo e status em lote de dispositivos educacionais na P.E.I. Reverendo Tércio Moraes Pereira.
-# 📱 Sistema de Controle e Rastreamento de Dispositivos Educacionais (MVP)
-
 *# 📱 Sistema de Controle e Rastreamento de Dispositivos Educacionais (MVP)
 
 Aplicação Web Responsiva (*Mobile-First*) desenvolvida para substituir o controle manual em caderno físico realizado pelos estagiários de TI da **Escola Estadual P.E.I. Reverendo Tércio Moraes Pereira**, alinhada ao [**ODS 4 — Educação de Qualidade (ONU Brasil)**](https://un.org).
