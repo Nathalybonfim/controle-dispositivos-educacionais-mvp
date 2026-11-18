@@ -297,3 +297,271 @@
       <div class="actions-grid">
         <button type="button" class="btn btn-primary" onclick="executarLote('emprestar')">➡️ Emprestar Lote</button>
         <button type="button" class="btn btn-success" onclick="executarLote('devolver')">✅ Devolver (Ativo)</button>
+        <button type="button" class="btn btn-warn" onclick="executarLote('carregando')">⚡ P/ Gabinete</button>
+        <button type="button" class="btn btn-danger" onclick="executarLote('inservivel')">⚠️ Inservível</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TELA 3: HISTÓRICO E RELATÓRIO -->
+  <section id="aba3" class="section">
+    <div class="card">
+      <h2 style="margin-top:0; font-size:1.05rem;">Histórico de Movimentações (Salvo no Tablet)</h2>
+      <div id="lista-historico"></div>
+      <button type="button" class="btn btn-primary" onclick="exportarCSV()">📥 Baixar Relatório em Planilha (.CSV)</button>
+      <button type="button" class="btn btn-secondary" onclick="resetarInventario()">🔄 Restaurar Inventário Padrão (224 itens)</button>
+    </div>
+  </section>
+</div>
+
+<script>
+  const STORAGE_KEY = 't2072d_inventario_v1';
+  const HIST_KEY = 't2072d_historico_v1';
+
+  let categoriaAtual = 'tablet';
+  let selecionados = new Set();
+
+  function gerarInventarioInicial() {
+    const lista = [];
+    for (let i = 1; i <= 122; i++) {
+      const num = String(i).padStart(2, '0');
+      const modelo = i <= 54 ? 'Positivo T2040B' : 'Positivo T2072D';
+      const inservivel = (i === 1 || i === 2);
+      lista.push({
+        id: `tablet-${num}`,
+        categoria: 'tablet',
+        numero: num,
+        modelo: modelo,
+        status: inservivel ? 'inservivel' : 'ativo',
+        professor: '',
+        turma: '',
+        obs: inservivel ? 'Aparelho inservível registrado na implantação inicial' : ''
+      });
+    }
+    for (let i = 1; i <= 63; i++) {
+      const num = String(i).padStart(2, '0');
+      lista.push({
+        id: `netbook-${num}`,
+        categoria: 'netbook',
+        numero: num,
+        modelo: 'Master N1110 / PC114',
+        status: 'ativo',
+        professor: '',
+        turma: '',
+        obs: ''
+      });
+    }
+    for (let i = 64; i <= 102; i++) {
+      const num = String(i).padStart(2, '0');
+      lista.push({
+        id: `chromebook-${num}`,
+        categoria: 'chromebook',
+        numero: num,
+        modelo: 'Samsung Chromebook',
+        status: 'ativo',
+        professor: '',
+        turma: '',
+        obs: ''
+      });
+    }
+    return lista;
+  }
+
+  let dispositivos = JSON.parse(localStorage.getItem(STORAGE_KEY)) || gerarInventarioInicial();
+  let historico = JSON.parse(localStorage.getItem(HIST_KEY)) || [];
+
+  function salvarDados() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(dispositivos));
+    localStorage.setItem(HIST_KEY, JSON.stringify(historico));
+  }
+
+  function abrirAba(n) {
+    document.querySelectorAll('.section').forEach((s, idx) => s.classList.toggle('active', idx + 1 === n));
+    document.querySelectorAll('.tab-btn').forEach((b, idx) => b.classList.toggle('active', idx + 1 === n));
+    atualizarTudo();
+  }
+
+  function mudarCategoria(cat) {
+    categoriaAtual = cat;
+    selecionados.clear();
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`cat-${cat}`).classList.add('active');
+    renderizarGrade();
+  }
+
+  function toggleDispositivo(id) {
+    if (selecionados.has(id)) selecionados.delete(id);
+    else selecionados.add(id);
+    renderizarGrade();
+  }
+
+  function selecionarProximos(qtd) {
+    let cont = 0;
+    for (const d of dispositivos) {
+      if (d.categoria === categoriaAtual && d.status === 'ativo' && !selecionados.has(d.id)) {
+        selecionados.add(d.id);
+        cont++;
+        if (cont >= qtd) break;
+      }
+    }
+    renderizarGrade();
+  }
+
+  function limparSelecao() {
+    selecionados.clear();
+    renderizarGrade();
+  }
+  function renderizarGrade() {
+    const container = document.getElementById('grade-dispositivos');
+    container.innerHTML = '';
+    document.getElementById('qtd-sel').textContent = selecionados.size;
+
+    const filtrados = dispositivos.filter(d => d.categoria === categoriaAtual);
+    const emprestadosCat = filtrados.filter(d => d.status === 'emprestado');
+
+    const boxBloq = document.getElementById('info-bloqueados');
+    if (emprestadosCat.length > 0) {
+      boxBloq.style.display = 'block';
+      boxBloq.innerHTML = '🔒 <strong>Emprestados nesta categoria:</strong> ' +
+        emprestadosCat.map(d => `#${d.numero} (${d.professor} - ${d.turma})`).join(' | ');
+    } else {
+      boxBloq.style.display = 'none';
+    }
+
+    const iconeMap = { ativo: '✅', emprestado: '🔒', carregando: '⚡', inservivel: '⚠️' };
+    const cssMap = { ativo: 'st-ativo', emprestado: 'st-emp', carregando: 'st-carg', inservivel: 'st-ins' };
+
+    filtrados.forEach(d => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `device-btn ${cssMap[d.status]} ${selecionados.has(d.id) ? 'selected' : ''}`;
+      btn.title = `${d.modelo} — ${d.status.toUpperCase()}${d.obs ? ' (' + d.obs + ')' : ''}`;
+      btn.innerHTML = `<span>${d.numero} ${iconeMap[d.status]}</span><small>${d.modelo.split(' ').pop()}</small>`;
+      btn.onclick = () => toggleDispositivo(d.id);
+      container.appendChild(btn);
+    });
+  }
+
+  function executarLote(acao) {
+    if (selecionados.size === 0) {
+      alert('Selecione pelo menos um dispositivo na grade antes de confirmar.');
+      return;
+    }
+
+    const prof = document.getElementById('inp-prof').value.trim();
+    const turma = document.getElementById('inp-turma').value.trim();
+    const obs = document.getElementById('inp-obs').value.trim();
+
+    if (acao === 'emprestar' && (!prof || !turma)) {
+      alert('Informe o nome do(a) Professor(a) e a Turma para realizar o empréstimo.');
+      return;
+    }
+    if (acao === 'inservivel' && !obs) {
+      alert('Informe a Observação Técnica descrevendo o defeito antes de marcar como Inservível.');
+      return;
+    }
+
+    const alvos = dispositivos.filter(d => selecionados.has(d.id));
+
+    if (acao === 'emprestar') {
+      const bloqueados = alvos.filter(d => d.status === 'inservivel' || d.status === 'emprestado');
+      if (bloqueados.length > 0) {
+        alert(`Bloqueio de Integridade: Os aparelhos ${bloqueados.map(b => '#' + b.numero).join(', ')} estão Inservíveis ou já Emprestados.`);
+        return;
+      }
+    }
+
+    alvos.forEach(d => {
+      if (acao === 'emprestar') {
+        d.status = 'emprestado';
+        d.professor = prof;
+        d.turma = turma;
+      } else if (acao === 'devolver') {
+        d.status = 'ativo';
+        d.professor = '';
+        d.turma = '';
+      } else if (acao === 'carregando') {
+        d.status = 'carregando';
+        d.professor = '';
+        d.turma = '';
+      } else if (acao === 'inservivel') {
+        d.status = 'inservivel';
+        d.obs = obs;
+        d.professor = '';
+        d.turma = '';
+      }
+    });
+
+    const agora = new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+    historico.unshift({
+      data: agora,
+      acao: acao.toUpperCase(),
+      categoria: categoriaAtual.toUpperCase(),
+      numeros: alvos.map(a => a.numero).join(', '),
+      quantidade: alvos.length,
+      detalhe: acao === 'emprestar' ? `${prof} (${turma})` : (obs || 'Operação concluída')
+    });
+
+    selecionados.clear();
+    salvarDados();
+    atualizarTudo();
+    alert(`Sucesso! ${alvos.length} dispositivo(s) atualizado(s) para ${acao.toUpperCase()}.`);
+  }
+
+  function atualizarTudo() {
+    document.getElementById('kpi-ativo').textContent = dispositivos.filter(d => d.status === 'ativo').length;
+    document.getElementById('kpi-emp').textContent = dispositivos.filter(d => d.status === 'emprestado').length;
+    document.getElementById('kpi-carg').textContent = dispositivos.filter(d => d.status === 'carregando').length;
+    document.getElementById('kpi-ins').textContent = dispositivos.filter(d => d.status === 'inservivel').length;
+
+    const inserviveis = dispositivos.filter(d => d.status === 'inservivel');
+    const boxIns = document.getElementById('box-inserviveis-painel');
+    if (inserviveis.length > 0) {
+      boxIns.innerHTML = `<h3 style="margin-top:0; font-size:0.95rem; color:#7f1d1d;">⚠️ Aparelhos Bloqueados (Inservíveis)</h3>` +
+        inserviveis.map(i => `<div style="font-size:0.85rem; margin-bottom:4px;"><strong>${i.categoria.toUpperCase()} #${i.numero}</strong> (${i.modelo}): ${i.obs}</div>`).join('');
+    } else {
+      boxIns.innerHTML = `<span style="font-size:0.88rem; color:#14532d;">✅ Nenhum aparelho marcado como inservível no momento.</span>`;
+    }
+
+    const histEl = document.getElementById('lista-historico');
+    if (historico.length === 0) {
+      histEl.innerHTML = '<p style="color:#475569; font-size:0.9rem;">Nenhuma movimentação registrada neste turno ainda.</p>';
+    } else {
+      histEl.innerHTML = historico.map(h => `
+        <div class="hist-item">
+          <strong>[${h.data}] ${h.acao}</strong> — ${h.quantidade}x ${h.categoria} (#${h.numeros})<br>
+          <span style="color:#475569;">${h.detalhe}</span>
+        </div>
+      `).join('');
+    }
+
+    renderizarGrade();
+  }
+
+  function exportarCSV() {
+    let csv = 'Data;Acao;Categoria;Quantidade;Numeros;Detalhes\n';
+    historico.forEach(h => {
+      csv += `"${h.data}";"${h.acao}";"${h.categoria}";"${h.quantidade}";"${h.numeros}";"${h.detalhe}"\n`;
+    });
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'relatorio_dispositivos_T2072D.csv';
+    a.click();
+  }
+
+  function resetarInventario() {
+    if (confirm('Deseja restaurar o inventário padrão de 224 aparelhos (com Tablets 01 e 02 inservíveis) e limpar o histórico?')) {
+      dispositivos = gerarInventarioInicial();
+      historico = [];
+      selecionados.clear();
+      salvarDados();
+      atualizarTudo();
+    }
+  }
+
+  atualizarTudo();
+</script>
+</body>
+</html>
