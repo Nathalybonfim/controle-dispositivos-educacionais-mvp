@@ -1,308 +1,299 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MVP — Controle de Dispositivos TI</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Controle de Dispositivos TI — P.E.I. Reverendo Tércio Moraes</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
-    body { background-color: #f1f5f9; color: #0f172a; padding-bottom: 40px; }
-
-    input[name="abas"] { display: none; }
-
-    header { background-color: #0f172a; color: #ffffff; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
-    .header-top { max-width: 440px; margin: 0 auto; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
-    .subtitulo { font-size: 11px; color: #93c5fd; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
-    h1 { font-size: 16px; font-weight: bold; }
-    .badge-user { font-size: 12px; background: #1e293b; padding: 6px 10px; border-radius: 8px; border: 1px solid #334155; }
-
-    nav { background-color: #1e293b; border-top: 1px solid #334155; }
-    .nav-grid { max-width: 440px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr 1fr; text-align: center; }
-    .nav-tab { min-height: 48px; display: flex; align-items: center; justify-content: center; border-bottom: 4px solid transparent; color: #cbd5e1; font-size: 12px; font-weight: bold; cursor: pointer; padding: 8px 4px; user-select: none; }
-
-    #tab1:checked ~ header label[for="tab1"],
-    #tab2:checked ~ header label[for="tab2"],
-    #tab3:checked ~ header label[for="tab3"] {
-      border-bottom-color: #60a5fa;
-      color: #ffffff;
-      background-color: rgba(51, 65, 85, 0.8);
+    :root {
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #cbd5e1;
+      --primary: #1d4ed8;
+      --primary-hover: #1e40af;
+      --ativo-bg: #dcfce7;
+      --ativo-txt: #14532d;
+      --ativo-bd: #16a34a;
+      --emp-bg: #dbeafe;
+      --emp-txt: #1e3a8a;
+      --emp-bd: #2563eb;
+      --carg-bg: #fef9c3;
+      --carg-txt: #713f12;
+      --carg-bd: #ca8a04;
+      --ins-bg: #fee2e2;
+      --ins-txt: #7f1d1d;
+      --ins-bd: #dc2626;
     }
 
-    main { max-width: 440px; margin: 0 auto; padding: 16px; }
-    .tela { display: none; }
-    #tab1:checked ~ main #tela1 { display: block; }
-    #tab2:checked ~ main #tela2 { display: block; }
-    #tab3:checked ~ main #tela3 { display: block; }
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+    body { margin: 0; background: var(--bg); color: var(--text); padding-bottom: 32px; }
 
-    .card { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .card-title { font-size: 14px; font-weight: bold; text-transform: uppercase; color: #1e293b; }
-    .badge-jwt { font-size: 11px; font-weight: bold; color: #065f46; background: #d1fae5; padding: 3px 8px; border-radius: 12px; border: 1px solid #6ee7b7; }
+    header {
+      background: #0f172a;
+      color: #fff;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    header h1 { margin: 0; font-size: 1.1rem; }
+    header small { color: #cbd5e1; display: block; font-size: 0.8rem; }
 
-    .field-label { display: block; font-size: 12px; font-weight: bold; color: #1e293b; margin-bottom: 4px; }
-    input[type="text"], input[type="email"], select { width: 100%; height: 46px; padding: 0 12px; border: 2px solid #94a3b8; border-radius: 8px; font-size: 14px; font-weight: 600; background: #fff; margin-bottom: 10px; }
+    .container { max-width: 960px; margin: 0 auto; padding: 14px; }
 
-    .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
-    .status-box { padding: 12px; border-radius: 10px; border: 2px solid; }
-    .status-top { display: flex; justify-content: space-between; align-items: center; }
-    .status-label { font-size: 11px; font-weight: 800; text-transform: uppercase; }
-    .status-num { font-size: 24px; font-weight: 900; }
-    .status-desc { font-size: 11px; margin-top: 4px; font-weight: 600; }
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .tab-btn {
+      min-height: 48px;
+      border: 2px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
 
-    .st-ativo { background: #ecfdf5; border-color: #059669; color: #064e3b; }
-    .st-emp { background: #eff6ff; border-color: #2563eb; color: #1e3a8a; }
-    .st-carg { background: #fffbeb; border-color: #d97706; color: #78350f; }
-    .st-ins { background: #fef2f2; border-color: #dc2626; color: #7f1d1d; }
+    .section { display: none; }
+    .section.active { display: block; }
 
-    .btn { width: 100%; min-height: 48px; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; border: none; margin-bottom: 10px; padding: 10px; text-align: center; user-select: none; }
-    .btn-primary { background: #1d4ed8; color: #ffffff; }
-    .btn-secondary { background: #ffffff; color: #0f172a; border: 2px solid #64748b; }
-    .btn-danger-sm { min-height: 44px; padding: 8px 12px; background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; border-radius: 8px; font-size: 12px; font-weight: bold; display: inline-flex; align-items: center; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
 
-    .legenda { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0; font-size: 11px; font-weight: bold; }
-    .leg-item { padding: 3px 7px; border-radius: 6px; border: 1px solid; }
-    .grade { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-    .item-num { min-height: 48px; border-radius: 8px; font-size: 14px; font-weight: 800; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px solid; }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    @media (min-width: 640px) {
+      .kpi-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    .kpi {
+      padding: 12px;
+      border-radius: 10px;
+      border: 2px solid;
+    }
+    .kpi strong { font-size: 1.5rem; display: block; }
+    .kpi span { font-size: 0.85rem; font-weight: 700; }
 
-    .num-sel { background: #1d4ed8; color: #ffffff; border-color: #1e3a8a; }
-    .num-ativo { background: #ecfdf5; color: #064e3b; border-color: #059669; }
-    .num-emp { background: #e2e8f0; color: #334155; border: 2px dashed #64748b; }
-    .num-carg { background: #fffbeb; color: #78350f; border-color: #d97706; }
-    .num-ins { background: #fee2e2; color: #7f1d1d; border-color: #dc2626; }
+    .st-ativo { background: var(--ativo-bg); color: var(--ativo-txt); border-color: var(--ativo-bd); }
+    .st-emp { background: var(--emp-bg); color: var(--emp-txt); border-color: var(--emp-bd); }
+    .st-carg { background: var(--carg-bg); color: var(--carg-txt); border-color: var(--carg-bd); }
+    .st-ins { background: var(--ins-bg); color: var(--ins-txt); border-color: var(--ins-bd); }
 
-    .acoes-lote { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .btn-verde { background: #047857; color: #fff; }
-    .btn-ambar { background: #b45309; color: #fff; }
-    .btn-vermelho { background: #b91c1c; color: #fff; }
+    .cat-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .cat-btn {
+      min-height: 48px;
+      border: 2px solid var(--border);
+      background: #f8fafc;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 6px;
+      font-size: 0.85rem;
+    }
+    .cat-btn.active {
+      background: #0f172a;
+      color: #fff;
+      border-color: #0f172a;
+    }
 
-    .alerta-sucesso { background: #ecfdf5; border: 2px solid #047857; border-radius: 12px; padding: 14px; margin-bottom: 14px; display: flex; gap: 10px; }
-    .alerta-aviso { background: #fffbeb; border: 2px solid #d97706; border-radius: 12px; padding: 12px; margin-bottom: 14px; display: flex; gap: 10px; }
-    .hist-item { padding: 10px 0; border-bottom: 1px solid #e2e8f0; }
+    .legenda {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    .leg-item { padding: 4px 8px; border-radius: 6px; border: 1px solid; }
+
+    .grade {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+      gap: 8px;
+      max-height: 360px;
+      overflow-y: auto;
+      padding: 4px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #f8fafc;
+    }
+    .device-btn {
+      min-height: 54px;
+      border-radius: 8px;
+      border: 2px solid;
+      font-weight: 800;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 2px;
+    }
+    .device-btn small { font-size: 0.65rem; font-weight: 600; }
+    .device-btn.selected {
+      background: #1d4ed8 !important;
+      color: #ffffff !important;
+      border-color: #0f172a !important;
+      transform: scale(1.03);
+    }
+
+    label { display: block; font-weight: 700; margin-top: 10px; margin-bottom: 4px; font-size: 0.9rem; }
+    input, select {
+      width: 100%;
+      min-height: 48px;
+      padding: 10px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .btn {
+      min-height: 48px;
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      margin-top: 10px;
+      padding: 10px 14px;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-secondary { background: #e2e8f0; color: #0f172a; border: 2px solid #94a3b8; }
+    .btn-success { background: #15803d; color: #fff; }
+    .btn-warn { background: #b45309; color: #fff; }
+    .btn-danger { background: #b91c1c; color: #fff; }
+
+    .actions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .info-box {
+      background: #eff6ff;
+      border: 2px solid #93c5fd;
+      color: #1e3a8a;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .hist-item {
+      border-bottom: 1px solid var(--border);
+      padding: 10px 0;
+      font-size: 0.88rem;
+    }
     .hist-item:last-child { border-bottom: none; }
-    .tag { font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px; display: inline-block; }
   </style>
 </head>
 <body>
 
-  <input type="radio" name="abas" id="tab1" checked>
-  <input type="radio" name="abas" id="tab2">
-  <input type="radio" name="abas" id="tab3">
+<header>
+  <div>
+    <small>P.E.I. Reverendo Tércio Moraes Pereira • T2072D</small>
+    <h1>📱 Controle de Dispositivos TI</h1>
+  </div>
+  <div style="font-size:0.85rem; font-weight:700;">👤 Equipe TI • Modo Offline Ativo</div>
+</header>
 
-  <header>
-    <div class="header-top">
-      <div>
-        <div class="subtitulo">P.E.I. Reverendo Tércio Moraes</div>
-        <h1>Controle de Dispositivos TI</h1>
+<div class="container">
+  <nav class="tabs" aria-label="Navegação principal">
+    <button class="tab-btn active" onclick="abrirAba(1)">1. Painel Geral</button>
+    <button class="tab-btn" onclick="abrirAba(2)">2. Grade em Lote</button>
+    <button class="tab-btn" onclick="abrirAba(3)">3. Histórico / Relatório</button>
+  </nav>
+
+  <!-- TELA 1: PAINEL -->
+  <section id="aba1" class="section active">
+    <div class="card">
+      <h2 style="margin-top:0; font-size:1.05rem;">Resumo do Inventário Real (224 Aparelhos)</h2>
+      <div class="kpi-grid">
+        <div class="kpi st-ativo"><strong id="kpi-ativo">0</strong><span>✅ Ativos</span></div>
+        <div class="kpi st-emp"><strong id="kpi-emp">0</strong><span>➡️ Emprestados</span></div>
+        <div class="kpi st-carg"><strong id="kpi-carg">0</strong><span>⚡ Carregando</span></div>
+        <div class="kpi st-ins"><strong id="kpi-ins">0</strong><span>⚠️ Inservíveis</span></div>
       </div>
-      <div class="badge-user">👤 Lucas (TI)</div>
     </div>
-    <nav>
-      <div class="nav-grid">
-        <label for="tab1" class="nav-tab">1. Entrada / Painel</label>
-        <label for="tab2" class="nav-tab">2. Grade em Lote</label>
-        <label for="tab3" class="nav-tab">3. Alertas / Hist.</label>
-      </div>
-    </nav>
-  </header>
 
-  <main>
+    <div class="card">
+      <h3 style="margin-top:0; font-size:1rem;">Distribuição Cadastrada na Escola</h3>
+      <ul style="margin:0; padding-left:18px; line-height:1.6; font-size:0.9rem;">
+        <li><strong>Tablets (01 a 122):</strong> 01–54 Positivo T2040B | 55–122 Positivo T2072D</li>
+        <li><strong>Netbooks (01 a 63):</strong> Positivo Master N1110 e Multilaser PC114</li>
+        <li><strong>Chromebooks (64 a 102):</strong> Samsung</li>
+      </ul>
+      <button class="btn btn-primary" onclick="abrirAba(2)">📋 Ir para Grade de Empréstimo / Devolução</button>
+    </div>
 
-    <!-- TELA 1 -->
-    <section id="tela1" class="tela">
-      <div class="card">
-        <div class="card-header">
-          <span class="card-title">🔒 Acesso Autenticado</span>
-          <span class="badge-jwt">Sessão JWT Ativa</span>
-        </div>
-        <label class="field-label" for="email">E-mail Institucional</label>
-        <input id="email" type="email" value="lucas.ti@escola.sp.gov.br" readonly>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
-          <span style="font-size:12px; color:#475569;">Perfil: <strong>estagiario_ti</strong></span>
-          <span class="btn-danger-sm">🚪 Sair (Logout)</span>
-        </div>
+    <div class="card" id="box-inserviveis-painel"></div>
+  </section>
+
+  <!-- TELA 2: GRADE EM LOTE -->
+  <section id="aba2" class="section">
+    <div class="card">
+      <div class="cat-bar">
+        <button class="cat-btn active" id="cat-tablet" onclick="mudarCategoria('tablet')">📱 Tablets<br>(01 a 122)</button>
+        <button class="cat-btn" id="cat-netbook" onclick="mudarCategoria('netbook')">💻 Netbooks<br>(01 a 63)</button>
+        <button class="cat-btn" id="cat-chromebook" onclick="mudarCategoria('chromebook')">🌐 Chromebooks<br>(64 a 102)</button>
       </div>
 
-      <div class="card">
-        <label class="field-label" for="cat">Filtrar Inventário por Categoria</label>
-        <select id="cat">
-          <option>Todos os Dispositivos (84 aparelhos)</option>
-          <option>Tablets Educacionais (01 a 55)</option>
-          <option>Chromebooks (60 a 84)</option>
-        </select>
-
-        <div class="status-grid">
-          <div class="status-box st-ativo">
-            <div class="status-top">
-              <span class="status-label">✅ Ativos</span>
-              <span class="status-num">52</span>
-            </div>
-            <div class="status-desc">Prontos para aula</div>
-          </div>
-
-          <div class="status-box st-emp">
-            <div class="status-top">
-              <span class="status-label">➡️ Emprestados</span>
-              <span class="status-num">20</span>
-            </div>
-            <div class="status-desc">Em uso nas salas</div>
-          </div>
-
-          <div class="status-box st-carg">
-            <div class="status-top">
-              <span class="status-label">⚡ Carregando</span>
-              <span class="status-num">8</span>
-            </div>
-            <div class="status-desc">No gabinete carga</div>
-          </div>
-
-          <div class="status-box st-ins">
-            <div class="status-top">
-              <span class="status-label">⚠️ Inservíveis</span>
-              <span class="status-num">4</span>
-            </div>
-            <div class="status-desc">Com defeito / bloq.</div>
-          </div>
-        </div>
+      <div class="legenda">
+        <span class="leg-item st-ativo">✅ Ativo</span>
+        <span class="leg-item" style="background:#1d4ed8;color:#fff;border-color:#0f172a;">☑️ Selec. (<span id="qtd-sel">0</span>)</span>
+        <span class="leg-item st-emp">🔒 Emprestado</span>
+        <span class="leg-item st-carg">⚡ Carga</span>
+        <span class="leg-item st-ins">⚠️ Inservível</span>
       </div>
 
-      <label for="tab2" class="btn btn-primary">📋 Abrir Grade de Empréstimo / Devolução</label>
-      <div class="btn btn-secondary">➕ Cadastrar Novo Dispositivo (RF01)</div>
-    </section>
-
-    <!-- TELA 2 -->
-    <section id="tela2" class="tela">
-      <div class="card">
-        <div class="card-header">
-          <span class="card-title">Tablets (01 a 25)</span>
-          <span style="font-size:12px; font-weight:bold; background:#dbeafe; color:#1e3a8a; padding:4px 8px; border-radius:10px;">15 selecionados</span>
-        </div>
-
-        <div class="legenda">
-          <span class="leg-item st-ativo">✅ Ativo</span>
-          <span class="leg-item num-sel">☑️ Selec.</span>
-          <span class="leg-item num-emp">🔒 Emprest.</span>
-          <span class="leg-item st-carg">⚡ Carga</span>
-          <span class="leg-item st-ins">⚠️ Inserv.</span>
-         
-        </div>
-
-        <button type="button" class="btn btn-secondary" style="margin-bottom:8px;">⚡ Selecionar Próximos 15 Disponíveis</button>
-        <div style="font-size:11px; color:#334155; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:6px 10px; margin-bottom:10px;">
-          🔒 <strong>Emprestados agora:</strong> Tablets 16 e 17 — <strong>Prof. Ricardo (3º A)</strong>
-        </div>
-
-        <div class="grade">
-          <div class="item-num num-sel">01<small>☑️</small></div>
-          <div class="item-num num-sel">02<small>☑️</small></div>
-          <div class="item-num num-sel">03<small>☑️</small></div>
-          <div class="item-num num-sel">04<small>☑️</small></div>
-          <div class="item-num num-sel">05<small>☑️</small></div>
-          <div class="item-num num-sel">06<small>☑️</small></div>
-          <div class="item-num num-sel">07<small>☑️</small></div>
-          <div class="item-num num-sel">08<small>☑️</small></div>
-          <div class="item-num num-sel">09<small>☑️</small></div>
-          <div class="item-num num-sel">10<small>☑️</small></div>
-          <div class="item-num num-sel">11<small>☑️</small></div>
-          <div class="item-num num-sel">12<small>☑️</small></div>
-          <div class="item-num num-sel">13<small>☑️</small></div>
-          <div class="item-num num-sel">14<small>☑️</small></div>
-          <div class="item-num num-sel">15<small>☑️</small></div>
-          <div class="item-num num-emp">16<small>🔒</small></div>
-          <div class="item-num num-emp">17<small>🔒</small></div>
-          <div class="item-num num-ins">18<small>⚠️</small></div>
-          <div class="item-num num-carg">19<small>⚡</small></div>
-          <div class="item-num num-carg">20<small>⚡</small></div>
-          <div class="item-num num-ativo">21<small>✅</small></div>
-          <div class="item-num num-ativo">22<small>✅</small></div>
-          <div class="item-num num-ativo">23<small>✅</small></div>
-          <div class="item-num num-ativo">24<small>✅</small></div>
-          <div class="item-num num-ativo">25<small>✅</small></div>
-        </div>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:10px;">
+        <button type="button" class="btn btn-secondary" style="margin-top:0;" onclick="selecionarProximos(15)">⚡ +15 Disponíveis</button>
+        <button type="button" class="btn btn-secondary" style="margin-top:0;" onclick="limparSelecao()">🧹 Limpar Seleção</button>
       </div>
 
-      <div class="card">
-        <div class="card-title" style="margin-bottom:10px;">Dados da Movimentação</div>
-        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:8px;">
-          <div>
-            <label class="field-label" for="prof">Professor(a) *</label>
-            <input id="prof" type="text" value="Prof.ª Mariana">
-          </div>
-          <div>
-            <label class="field-label" for="turma">Turma *</label>
-            <input id="turma" type="text" value="2º D">
-          </div>
-        </div>
-        <label class="field-label" for="obs">Observação Técnica (Obrigatória se Inservível)</label>
-        <input id="obs" type="text" placeholder="Ex: Tela trincada ou sem carga">
-      </div>
+      <div id="info-bloqueados" class="info-box" style="display:none;"></div>
 
-      <div class="acoes-lote">
-        <label for="tab3" class="btn btn-primary">➡️ Emprestar Lote</label>
-        <label for="tab3" class="btn btn-verde">✅ Devolver (Ativo)</label>
-        <label for="tab3" class="btn btn-ambar">⚡ P/ Gabinete</label>
-        <label for="tab3" class="btn btn-vermelho">⚠️ Inservível</label>
-      </div>
-    </section>
+      <div id="grade-dispositivos" class="grade" role="group" aria-label="Grade numérica de dispositivos"></div>
 
-    <section id="tela3" class="tela">
-      <div class="alerta-sucesso" role="alert">
-        <span style="font-size:24px;">✅</span>
-        <div>
-          <div style="font-size:14px; font-weight:800; color:#064e3b;">Lote Registrado com Sucesso!</div>
-          <p style="font-size:12px; color:#065f46; margin-top:4px; line-height:1.4;">
-            15 Tablets (<strong>01 a 15</strong>) foram emprestados para <strong>Prof.ª Mariana (Turma 2º D)</strong> às 09:50 por Estagiário Lucas.
-          </p>
-        </div>
-      </div>
+      <label for="inp-prof">Professor(a) Responsável *</label>
+      <input type="text" id="inp-prof" placeholder="Ex: Prof.ª Josefa / Prof. Carlos" />
 
-      <div class="alerta-aviso">
-        <span style="font-size:20px;">⚠️</span>
-        <div>
-          <div style="font-size:12px; font-weight:800; color:#78350f; text-transform:uppercase;">Bloqueio de Integridade</div>
-          <p style="font-size:12px; color:#78350f; margin-top:2px;">
-            O <strong>Tablet 18</strong> permanece bloqueado como <em>Inservível</em> (conector de carga danificado).
-          </p>
-        </div>
-      </div>
+      <label for="inp-turma">Turma / Sala *</label>
+      <input type="text" id="inp-turma" placeholder="Ex: 2º D / Sala de Recursos" />
 
-      <div class="card">
-        <div class="card-title" style="margin-bottom:8px;">Histórico Recente do Turno</div>
+      <label for="inp-obs">Observação Técnica (Obrigatória para Inservível)</label>
+      <input type="text" id="inp-obs" placeholder="Ex: Tela trincada / Conector não carrega" />
 
-        <div class="hist-item">
-          <div style="display:flex; justify-content:space-between;">
-            <span class="tag st-emp">➡️ EMPRÉSTIMO</span>
-            <span style="font-size:11px; color:#64748b; font-weight:bold;">Hoje, 09:50</span>
-          </div>
-          <div style="font-size:13px; font-weight:bold; margin-top:4px;">Prof.ª Mariana — Turma 2º D</div>
-          <div style="font-size:12px; color:#475569;">Tablets: <strong>01 ao 15</strong> (15 unid.) • Resp: Lucas</div>
-        </div>
-
-        <div class="hist-item">
-          <div style="display:flex; justify-content:space-between;">
-            <span class="tag st-carg">⚡ GABINETE CARGA</span>
-            <span style="font-size:11px; color:#64748b; font-weight:bold;">Hoje, 09:35</span>
-          </div>
-          <div style="font-size:13px; font-weight:bold; margin-top:4px;">Devolução Prof. Carlos — Turma 9º A</div>
-          <div style="font-size:12px; color:#475569;">Chromebooks: <strong>60 ao 67</strong> (8 unid.) • Resp: Lucas</div>
-        </div>
-
-        <div class="hist-item">
-          <div style="display:flex; justify-content:space-between;">
-            <span class="tag st-ins">⚠️ INSERVÍVEL</span>
-            <span style="font-size:11px; color:#64748b; font-weight:bold;">Hoje, 08:20</span>
-          </div>
-          <div style="font-size:13px; font-weight:bold; margin-top:4px;">Tablet 18 — Manutenção</div>
-          <div style="font-size:12px; color:#475569;">Obs: Conector USB-C danificado • Resp: Lucas</div>
-        </div>
-      </div>
-
-      <div class="acoes-lote">
-        <label for="tab2" class="btn btn-primary">📋 Nova Operação</label>
-        <label for="tab1" class="btn btn-secondary">🏠 Painel Inicial</label>
-      </div>
-    </section>
-
-  </main>
-
-</body>
-</html>
+      <div class="actions-grid">
+        <button type="button" class="btn btn-primary" onclick="executarLote('emprestar')">➡️ Emprestar Lote</button>
+        <button type="button" class="btn btn-success" onclick="executarLote('devolver')">✅ Devolver (Ativo)</button>
