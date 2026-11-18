@@ -221,8 +221,8 @@
 
 <header>
   <div>
-    <small>P.E.I. Reverendo Tércio Moraes Pereira • T2072D</small>
-    <h1>📱 Controle de Dispositivos TI</h1>
+    <small>E.E.I. Reverendo Tércio Moraes Pereira • </small>
+    <h1>📱 Controle de Dispositivos - TI</h1>
   </div>
   <div style="font-size:0.85rem; font-weight:700;">👤 Equipe TI • Modo Offline Ativo</div>
 </header>
@@ -323,6 +323,7 @@
 
   function gerarInventarioInicial() {
     const lista = [];
+    // Tablets 01 a 122 (01 e 02 inservíveis)
     for (let i = 1; i <= 122; i++) {
       const num = String(i).padStart(2, '0');
       const modelo = i <= 54 ? 'Positivo T2040B' : 'Positivo T2072D';
@@ -338,20 +339,26 @@
         obs: inservivel ? 'Aparelho inservível registrado na implantação inicial' : ''
       });
     }
-    for (let i = 1; i <= 63; i++) {
+
+    // Netbooks 01 a 61 (mapeados exatamente pela Coluna P da planilha)
+    const listaPC114 = new Set([1, 24, 26, 27, 30, 31, 34, 35, 36, 37, 38, 39, 41, 42, 43, 44, 45, 46, 47, 48, 58, 59]);
+    for (let i = 1; i <= 61; i++) {
       const num = String(i).padStart(2, '0');
+      const modeloReal = listaPC114.has(i) ? 'Multilaser PC114' : 'Positivo N1110';
       lista.push({
         id: `netbook-${num}`,
         categoria: 'netbook',
         numero: num,
-        modelo: 'Master N1110 / PC114',
+        modelo: modeloReal,
         status: 'ativo',
         professor: '',
         turma: '',
         obs: ''
       });
     }
-    for (let i = 64; i <= 102; i++) {
+
+    // Chromebooks Samsung 62 a 102 (conforme Coluna P da planilha)
+    for (let i = 62; i <= 102; i++) {
       const num = String(i).padStart(2, '0');
       lista.push({
         id: `chromebook-${num}`,
