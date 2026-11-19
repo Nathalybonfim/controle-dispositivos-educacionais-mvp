@@ -2,7 +2,7 @@
 
 
 
-Aplicação Web Responsiva (*Mobile-First*) desenvolvida para substituir o controle manual em caderno físico realizado pelos estagiários de TI da **Escola Estadual P.E.I. Reverendo Tércio Moraes Pereira**, alinhada ao [**ODS 4 — Educação de Qualidade (ONU Brasil)**](https://un.org).
+Aplicação Web Responsiva (*Mobile-First*) desenvolvida para substituir o controle manual em caderno físico realizado pelo estagiário de TI da **Escola Estadual P.E.I. Reverendo Tércio Moraes Pereira**, alinhada ao [**ODS 4 — Educação de Qualidade (ONU Brasil)**](https://un.org).
 
 ## 📑 Sumário Navegável
 * [🎯 Objetivo e Diferencial](#-objetivo-e-diferencial)
